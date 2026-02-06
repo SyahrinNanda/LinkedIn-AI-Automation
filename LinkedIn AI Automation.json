@@ -1,0 +1,508 @@
+{
+  "name": "LinkedIn AI Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        112
+      ],
+      "id": "3866326f-0ce7-45c4-a772-956f4a891491",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a5ba1753-467a-4a33-ad45-c9a1028eb5c1",
+              "leftValue": "=Thu, 05 Feb 2026 23:53:42 +0000",
+              "rightValue": "={{ $now.minus(1, 'days') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        112
+      ],
+      "id": "73cacd4c-9c03-4fab-9a2c-2b10d746891b",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this news data:\nTitle: {{ $json.title }}\nSnippet: {{ $json.contentSnippet }}\nLink: {{ $json.link }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Senior Tech Ghostwriter for a LinkedIn Influencer. Your goal is to turn news into high-engagement posts.\n\nRULES:\n1. Tone: Professional yet provocative.\n2. No generic intros like \"Here is the news\". Jump straight to the insight.\n3. STRICT JSON OUTPUT ONLY. Do not write any text outside the JSON block.\n\nREQUIRED JSON FORMAT:\n{\n  \"category\": \"Keyword kategori berita (e.g. AI Ethics, Startup, Hardware)\",\n  \"hook\": \"1 kalimat pembuka yang kontroversial/menarik\",\n  \"body\": \"Isi postingan lengkap (max 150 kata), gunakan bullet points jika perlu\",\n  \"hashtags\": \"#tag1 #tag2 #tag3\"\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        496,
+        16
+      ],
+      "id": "2d3b2fe8-2ebe-46fe-910e-f8f9d608a9f3",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        32,
+        976
+      ],
+      "id": "16376d66-c384-4e5a-a2ef-35d50b1a0a24",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rTh2MWsgsGQmGsVx",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1g6d-HGp0oC3gL6WeolI_1CnduIZPUfEw2M-srHaTvuM",
+          "mode": "list",
+          "cachedResultName": "LinkedIn AI Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g6d-HGp0oC3gL6WeolI_1CnduIZPUfEw2M-srHaTvuM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g6d-HGp0oC3gL6WeolI_1CnduIZPUfEw2M-srHaTvuM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.timestamp }}",
+            "Original Source": "={{ $json.source_link }}",
+            "Topic Category": "={{ $json.category }}",
+            "Hook Viral": "={{ $json.hook }}",
+            "LinkedIn Post Body": "={{ $json.body }}",
+            "Hashtags": "={{ $json.hashtags }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Original Source",
+              "displayName": "Original Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topic Category",
+              "displayName": "Topic Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hook Viral",
+              "displayName": "Hook Viral",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LinkedIn Post Body",
+              "displayName": "LinkedIn Post Body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hashtags",
+              "displayName": "Hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source_link",
+              "displayName": "source_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "hook",
+              "displayName": "hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "hashtags",
+              "displayName": "hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1312,
+        112
+      ],
+      "id": "7809002c-1386-4ddf-8067-790b7b00b253",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fefzGqfLauFxmSHF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Ambil output teks dari Gemini\nconst rawText = $input.item.json.text;\n\n// Bersihkan jika ada markdown formatting (tanda kutip atau ```json)\nconst cleanText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();\n\n// Ubah Teks menjadi Objek Data (JSON Parsing)\nlet aiData;\ntry {\n    aiData = JSON.parse(cleanText);\n} catch (error) {\n    // Fallback jika AI gagal generate JSON\n    aiData = {\n        category: \"General\",\n        hook: \"Check Manually\",\n        body: rawText,\n        hashtags: \"#news\"\n    };\n}\n\n// Ambil data link asli dari node Filter (node sebelum LLM)\nconst rssData = $('Filter').item.json;\n\nreturn {\n    json: {\n        timestamp: new Date().toISOString(),\n        source_link: rssData.link, // Pastikan 'link' sesuai dengan nama output RSS kamu\n        category: aiData.category,\n        hook: aiData.hook,\n        body: aiData.body,\n        hashtags: aiData.hashtags\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        112
+      ],
+      "id": "da7b7e2d-ee84-4bbc-8207-55c934d65410",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "f4403ae9-463e-4c78-b848-bdf0cc64611e",
+      "name": "RSS Read",
+      "retryOnFail": false,
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        112
+      ],
+      "id": "fc6fc3df-e83a-46d4-b266-38bc6b616f79",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "508c95eb-7b3c-437c-8b3a-2908a1da882d",
+              "name": "text",
+              "value": "={\n  \"category\": \"Technology\",\n  \"hook\": \"AI is changing the world fast!\",\n  \"body\": \"This is a dummy content generated for portfolio purpose.\",\n  \"hashtags\": \"#AI #Tech #Portfolio\"\n}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        1008
+      ],
+      "id": "e8fdbf59-d895-4b97-86c4-b7981f437278",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        496,
+        352
+      ],
+      "id": "5dc17bb4-cacc-4fa7-bbf4-fff53c9a5c08",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "EGVwd7XJdS9pdJkR",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "akuntes844@gmail.com",
+        "subject": "=Riset Harian: {{ $json.category }}",
+        "message": "=Halo Pak/Ibu,\n<br>\n<br>\nBerikut rangkuman riset hari ini:\n{{ $json.body }}\n<br>\n<br>\nHashtags: {{ $json.hashtags }}\n<br>\n<br>\nSalam,\nAI Agent",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        368
+      ],
+      "id": "118a4dc3-a37f-458d-b915-76e44fcc3308",
+      "name": "Send a message",
+      "webhookId": "896b0550-1f2d-4f76-a390-42c77bc86272",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "X9QW16Os6fwJVJ3x",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "6413066166",
+        "text": "=🚨 **New AI Insight!**\n\n📂 Kategori: {{ $json.category }}\n🎣 Hook: {{ $json.hook }}\n\n🔗 Sumber: {{ $json.source_link }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        -128
+      ],
+      "id": "9678c0df-19a6-47ef-83b4-752807099e72",
+      "name": "Send a text message",
+      "webhookId": "c0ee9346-54d1-4c1c-b8f1-aaefcd702c0f",
+      "credentials": {
+        "telegramApi": {
+          "id": "47O6Sj7Kl78GiEzs",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4ad80c68-b2b6-40f6-81cc-44f692a6e89d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8bf7322df3afb209a60b4455a4810cf80cf32b0c4e17d985ab996bd8f935dc04"
+  },
+  "id": "TUkIPWpEQYc8leHO8laDd",
+  "tags": []
+}
